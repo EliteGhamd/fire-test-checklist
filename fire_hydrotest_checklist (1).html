@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<!-- Fire System Hydrostatic Test - Field Safety Checklist
+     Copyright (c) 2026 Eng. Albaraa Alghamdi. All rights reserved. -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Fire System Hydrostatic Test - Field Safety Checklist</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1a1d21; --paper:#f2f3f0; --card:#ffffff; --line:#d8dbd4;
+  --brand:#b3261e; --brand-dark:#8c1c15;
+  --pass:#1b7f4d; --pass-bg:#e3f2e9;
+  --fail:#c62828; --fail-bg:#fdecea;
+  --na:#5f6368;  --na-bg:#eceef0;
+  --amber:#b26a00; --amber-bg:#fdf3e3;
+  --muted:#6b7076;
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+html,body{margin:0; padding:0;}
+body{
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans","Noto Sans Arabic","Noto Sans Devanagari",sans-serif;
+  background:var(--paper); color:var(--ink); font-size:16px; line-height:1.45;
+}
+.display{font-family:"Barlow Condensed",system-ui,sans-serif; letter-spacing:.02em;}
+[dir="rtl"] .display{letter-spacing:0;}
+
+/* ---------- Header ---------- */
+header{
+  background:var(--brand); color:#fff; padding:14px 16px 12px;
+  position:sticky; top:0; z-index:40; box-shadow:0 2px 6px rgba(0,0,0,.18);
+}
+.hd-row{display:flex; align-items:center; justify-content:space-between; gap:10px; max-width:860px; margin:0 auto;}
+.hd-title{font-size:22px; font-weight:700; text-transform:uppercase; line-height:1.05;}
+.hd-sub{font-size:12.5px; opacity:.92; margin-top:2px;}
+.lang{display:flex; gap:6px;}
+.lang button{
+  border:1px solid rgba(255,255,255,.55); background:transparent; color:#fff;
+  border-radius:6px; padding:6px 9px; font-size:13px; font-weight:600; cursor:pointer; min-width:40px;
+}
+.lang button.on{background:#fff; color:var(--brand);}
+
+main{max-width:860px; margin:0 auto; padding:14px 12px 90px;}
+
+/* ---------- Status tag (signature element) ---------- */
+.tag{
+  background:var(--card); border:2px solid var(--ink); border-radius:12px;
+  padding:14px 16px 14px 40px; margin:14px 0; position:relative; overflow:hidden;
+}
+[dir="rtl"] .tag{padding:14px 40px 14px 16px;}
+.tag::before{ /* punched hole like a permit tag */
+  content:""; position:absolute; top:50%; left:14px; transform:translateY(-50%);
+  width:14px; height:14px; border-radius:50%; background:var(--paper); border:2px solid var(--ink);
+}
+[dir="rtl"] .tag::before{left:auto; right:14px;}
+.tag-verdict{font-size:26px; font-weight:700; text-transform:uppercase;}
+.tag-note{font-size:13.5px; color:var(--muted); margin-top:2px;}
+.tag-counts{display:flex; gap:14px; margin-top:10px; font-size:13.5px; font-weight:600; flex-wrap:wrap;}
+.tag-counts span{display:inline-flex; align-items:center; gap:5px;}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block;}
+.bar{height:8px; background:var(--na-bg); border-radius:5px; margin-top:10px; overflow:hidden; display:flex;}
+.bar i{display:block; height:100%;}
+.v-approved{border-color:var(--pass); background:var(--pass-bg);} .v-approved .tag-verdict{color:var(--pass);}
+.v-stop{border-color:var(--fail); background:var(--fail-bg);} .v-stop .tag-verdict{color:var(--fail);}
+.v-attn{border-color:var(--amber); background:var(--amber-bg);} .v-attn .tag-verdict{color:var(--amber);}
+.v-open .tag-verdict{color:var(--muted);}
+
+/* ---------- Cards & fields ---------- */
+.card{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px; margin:14px 0;}
+h2.sec{
+  font-size:19px; font-weight:700; text-transform:uppercase; margin:0 0 10px;
+  padding-bottom:8px; border-bottom:2px solid var(--ink);
+  display:flex; justify-content:space-between; align-items:baseline; gap:8px;
+}
+h2.sec small{font-size:12.5px; color:var(--muted); font-weight:600; text-transform:none; font-family:system-ui,sans-serif; letter-spacing:0;}
+.grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+.grid .full{grid-column:1/-1;}
+label.f{display:block; font-size:12px; font-weight:700; color:var(--muted); text-transform:uppercase; margin-bottom:3px;}
+input[type=text],input[type=number],input[type=date],input[type=time],textarea{
+  width:100%; border:1px solid var(--line); border-radius:8px; padding:10px; font-size:15px;
+  font-family:inherit; background:#fff; color:var(--ink);
+}
+input:focus,textarea:focus{outline:2px solid var(--brand); outline-offset:1px;}
+.hint{font-size:12px; color:var(--muted); margin-top:3px;}
+.drop-flag{font-size:13.5px; font-weight:700; margin-top:8px; padding:8px 10px; border-radius:8px; display:none;}
+.drop-flag.bad{display:block; background:var(--fail-bg); color:var(--fail);}
+.drop-flag.ok{display:block; background:var(--pass-bg); color:var(--pass);}
+
+/* ---------- Checklist items ---------- */
+.item{padding:12px 0; border-bottom:1px dashed var(--line);}
+.item:last-child{border-bottom:none;}
+.item-top{display:flex; gap:8px; align-items:flex-start;}
+.item-no{
+  font-family:"Barlow Condensed",sans-serif; font-weight:700; font-size:15px;
+  min-width:26px; color:var(--muted); padding-top:1px;
+}
+.item-txt{flex:1; font-size:15.5px;}
+.crit{
+  display:inline-block; font-size:10.5px; font-weight:800; color:var(--fail);
+  border:1px solid var(--fail); border-radius:4px; padding:0 5px; margin-inline-start:6px;
+  vertical-align:2px; text-transform:uppercase;
+}
+.seg{display:flex; gap:8px; margin-top:9px;}
+.seg button{
+  flex:1; min-height:44px; border-radius:9px; border:1.5px solid var(--line);
+  background:#fff; font-size:14.5px; font-weight:700; cursor:pointer; color:var(--muted);
+}
+.seg button.p.on{background:var(--pass); border-color:var(--pass); color:#fff;}
+.seg button.f.on{background:var(--fail); border-color:var(--fail); color:#fff;}
+.seg button.n.on{background:var(--na); border-color:var(--na); color:#fff;}
+.rmk{margin-top:8px; display:none;}
+.rmk.show{display:block;}
+.item.failed{background:var(--fail-bg); margin:0 -14px; padding-left:14px; padding-right:14px; border-radius:8px;}
+
+/* ---------- Signatures ---------- */
+.sig-wrap{display:grid; grid-template-columns:1fr; gap:14px;}
+@media(min-width:640px){.sig-wrap{grid-template-columns:1fr 1fr;}}
+.sig-box{border:1px solid var(--line); border-radius:10px; padding:10px;}
+.sig-box canvas{
+  width:100%; height:120px; border:1px dashed var(--na); border-radius:8px;
+  background:#fcfcfb; touch-action:none; display:block;
+}
+.sig-actions{display:flex; justify-content:space-between; align-items:center; margin-top:6px;}
+.sig-actions button{border:none; background:none; color:var(--brand); font-weight:700; font-size:13.5px; cursor:pointer; padding:6px;}
+
+/* ---------- Footer actions ---------- */
+.actions{
+  position:fixed; bottom:0; left:0; right:0; z-index:50;
+  background:#fff; border-top:1px solid var(--line); padding:10px 12px calc(10px + env(safe-area-inset-bottom));
+  display:flex; gap:10px; max-width:100%; box-shadow:0 -2px 8px rgba(0,0,0,.06);
+}
+.actions .inner{display:flex; gap:10px; width:100%; max-width:860px; margin:0 auto;}
+.btn{
+  flex:1; min-height:48px; border-radius:10px; font-size:15px; font-weight:700; cursor:pointer;
+  border:1.5px solid var(--ink); background:#fff; color:var(--ink);
+}
+.btn.primary{background:var(--ink); color:#fff;}
+.note-mem{font-size:12.5px; color:var(--muted); text-align:center; margin-top:10px;}
+
+/* ---------- Print ---------- */
+@media print{
+  header .lang,.actions,.sig-actions,.note-mem{display:none !important;}
+  header{position:static; background:#fff; color:var(--ink); box-shadow:none; border-bottom:3px solid var(--brand); padding:0 0 8px;}
+  body{background:#fff; font-size:12px;}
+  main{padding:0; max-width:none;}
+  .card,.tag{border-radius:0; break-inside:avoid; margin:8px 0; padding:8px 10px;}
+  .tag{padding-inline-start:34px;}
+  .seg button{min-height:auto; padding:2px 6px; font-size:11px;}
+  .seg button:not(.on){display:none;}
+  .item{padding:6px 0;}
+  input,textarea{border:none; border-bottom:1px solid #999; border-radius:0; padding:2px 0; font-size:12px;}
+  .sig-box canvas{height:90px; border:1px solid #999;}
+  .item.failed{margin:0; padding-left:0; padding-right:0;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hd-row">
+    <div>
+      <div class="hd-title display" data-t="appTitle">Fire System Hydrostatic Test</div>
+      <div class="hd-sub" data-t="appSub">Field Safety Checklist - SH&E Digital Delivery Pilot</div>
+    </div>
+    <div class="lang" id="langBar">
+      <button data-lang="en" class="on">EN</button>
+      <button data-lang="ar">ع</button>
+      <button data-lang="hi">हि</button>
+      <button data-lang="ur">اردو</button>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- Live verdict tag -->
+  <div class="tag v-open" id="tag">
+    <div class="tag-verdict display" id="tagVerdict">-</div>
+    <div class="tag-note" id="tagNote"></div>
+    <div class="tag-counts">
+      <span><i class="dot" style="background:var(--pass)"></i><b id="cPass">0</b> <span data-t="pass">Pass</span></span>
+      <span><i class="dot" style="background:var(--fail)"></i><b id="cFail">0</b> <span data-t="fail">Fail</span></span>
+      <span><i class="dot" style="background:var(--na)"></i><b id="cNa">0</b> <span data-t="na">N/A</span></span>
+      <span><i class="dot" style="background:var(--line)"></i><b id="cOpen">0</b> <span data-t="open">Pending</span></span>
+    </div>
+    <div class="bar" id="bar"></div>
+  </div>
+
+  <!-- Test information -->
+  <section class="card">
+    <h2 class="sec display"><span data-t="secInfo">Test Information</span></h2>
+    <div class="grid">
+      <div class="full"><label class="f" data-t="fProject">Project</label><input type="text" id="fProject"></div>
+      <div><label class="f" data-t="fContractor">Contractor</label><input type="text" id="fContractor"></div>
+      <div><label class="f" data-t="fLocation">Location / Zone</label><input type="text" id="fLocation"></div>
+      <div><label class="f" data-t="fSystem">System / Loop ID</label><input type="text" id="fSystem" placeholder="e.g. FF-Riser-02"></div>
+      <div><label class="f" data-t="fDate">Date</label><input type="date" id="fDate"></div>
+      <div><label class="f" data-t="fTime">Start Time</label><input type="time" id="fTime"></div>
+      <div><label class="f" data-t="fPressure">Test Pressure</label><input type="text" id="fPressure" value="200 psi / 13.8 bar"><div class="hint" data-t="hPressure">NFPA 13/14: 200 psi (13.8 bar), or 50 psi above working pressure if &gt;150 psi</div></div>
+      <div><label class="f" data-t="fHold">Hold Time (min)</label><input type="number" id="fHold" value="120"><div class="hint" data-t="hHold">Minimum 2 hours</div></div>
+      <div><label class="f" data-t="fMedium">Test Medium</label><input type="text" id="fMedium" value="Water"></div>
+      <div><label class="f" data-t="fGauge">Gauge ID / Calibration Due</label><input type="text" id="fGauge"></div>
+      <div><label class="f" data-t="fStart">Pressure at Start</label><input type="number" id="pStart" inputmode="decimal" step="0.1"></div>
+      <div><label class="f" data-t="fEnd">Pressure at End</label><input type="number" id="pEnd" inputmode="decimal" step="0.1"></div>
+      <div class="full"><div class="drop-flag" id="dropFlag"></div></div>
+    </div>
+  </section>
+
+  <div id="sections"></div>
+
+  <!-- Signatures -->
+  <section class="card">
+    <h2 class="sec display"><span data-t="secSign">Sign-Off</span></h2>
+    <div class="sig-wrap">
+      <div class="sig-box">
+        <label class="f" data-t="sigTester">Tester / Technician - Name</label>
+        <input type="text" id="nameTester" style="margin-bottom:8px;">
+        <canvas id="sigTester"></canvas>
+        <div class="sig-actions"><span class="f" data-t="signHere">Sign above</span><button type="button" onclick="clearSig('sigTester')" data-t="clear">Clear</button></div>
+      </div>
+      <div class="sig-box">
+        <label class="f" data-t="sigShe">SH&amp;E Officer - Name</label>
+        <input type="text" id="nameShe" style="margin-bottom:8px;">
+        <canvas id="sigShe"></canvas>
+        <div class="sig-actions"><span class="f" data-t="signHere">Sign above</span><button type="button" onclick="clearSig('sigShe')" data-t="clear">Clear</button></div>
+      </div>
+    </div>
+    <p class="note-mem" data-t="memNote">Data is kept in this open page only - export CSV or PDF before closing.</p>
+  </section>
+
+  <footer style="text-align:center; font-size:12.5px; color:var(--muted); padding:6px 0 4px;">
+    &copy; 2026 Eng. Albaraa Alghamdi. All rights reserved.
+  </footer>
+</main>
+
+<div class="actions"><div class="inner">
+  <button class="btn" id="btnCsv" data-t="btnCsv">Export CSV</button>
+  <button class="btn primary" id="btnPdf" data-t="btnPdf">Print / PDF Report</button>
+</div></div>
+
+<script>
+/* =============== TRANSLATIONS =============== */
+const UI = {
+en:{appTitle:"Fire System Hydrostatic Test",appSub:"Field Safety Checklist - SH&E Digital Delivery Pilot",
+ pass:"Pass",fail:"Fail",na:"N/A",open:"Pending",
+ vOpen:"In Progress",vOpenN:"Complete all checklist items.",
+ vStop:"STOP - Not Approved",vStopN:"Critical safety item failed. Suspend the test and correct before proceeding.",
+ vAttn:"Attention Required",vAttnN:"Non-critical item(s) failed. Resolve and record corrective action.",
+ vOk:"Approved",vOkN:"All safety requirements verified. Test may proceed / be released.",
+ secInfo:"Test Information",secSign:"Sign-Off",
+ fProject:"Project",fContractor:"Contractor",fLocation:"Location / Zone",fSystem:"System / Loop ID",
+  fDate:"Date",fTime:"Start Time",fPressure:"Test Pressure",
+ hPressure:"NFPA 13/14: 200 psi (13.8 bar), or 50 psi above working pressure if >150 psi",
+ fHold:"Hold Time (min)",hHold:"Minimum 2 hours",fMedium:"Test Medium",fGauge:"Gauge ID / Calibration Due",
+ fStart:"Pressure at Start",fEnd:"Pressure at End",
+ dropBad:"⚠ Pressure drop detected - investigate leakage before approval",dropOk:"✓ No pressure drop",
+ sigTester:"Tester / Technician - Name",sigShe:"SH&E Officer - Name",signHere:"Sign above",clear:"Clear",
+ memNote:"Data is kept in this open page only - export CSV or PDF before closing.",
+ btnCsv:"Export CSV",btnPdf:"Print / PDF Report",remark:"Remark / corrective action…",critical:"Critical",
+ sA:"A. Pre-Test Preparation",sB:"B. During Test",sC:"C. Post-Test & Depressurization",
+ csvMeta:["Project","Contractor","Location","System/Loop ID","Date","Start Time","Test Pressure","Hold Time (min)","Medium","Gauge ID/Cal Due","Pressure Start","Pressure End","Verdict","Tester","SH&E Officer"],
+ csvHead:["No.","Section","Checklist Item","Critical","Status","Remark"]},
+ar:{appTitle:"الاختبار الهيدروستاتيكي لنظام الإطفاء",appSub:"قائمة فحص السلامة الميدانية - مبادرة الرقمنة",
+ pass:"مطابق",fail:"غير مطابق",na:"لا ينطبق",open:"معلّق",
+ vOpen:"قيد التنفيذ",vOpenN:"أكمل جميع بنود القائمة.",
+ vStop:"توقف - غير معتمد",vStopN:"فشل بند سلامة حرج. أوقف الاختبار وصحّح قبل المتابعة.",
+ vAttn:"يتطلب الانتباه",vAttnN:"فشل بند غير حرج. عالج وسجّل الإجراء التصحيحي.",
+ vOk:"معتمد",vOkN:"تم التحقق من جميع متطلبات السلامة. يمكن المتابعة.",
+ secInfo:"بيانات الاختبار",secSign:"التوقيعات",
+ fProject:"المشروع",fContractor:"المقاول",fLocation:"الموقع / المنطقة",fSystem:"رقم النظام / الخط",
+  fDate:"التاريخ",fTime:"وقت البدء",fPressure:"ضغط الاختبار",
+ hPressure:"‏NFPA 13/14: ‏200 psi (13.8 بار)، أو 50 psi فوق ضغط التشغيل إذا تجاوز 150 psi",
+ fHold:"مدة الثبات (دقيقة)",hHold:"ساعتان كحد أدنى",fMedium:"وسيط الاختبار",fGauge:"رقم العداد / تاريخ المعايرة",
+ fStart:"الضغط عند البدء",fEnd:"الضغط عند النهاية",
+ dropBad:"⚠ انخفاض في الضغط - افحص التسرب قبل الاعتماد",dropOk:"✓ لا يوجد انخفاض في الضغط",
+ sigTester:"الفني المختص - الاسم",sigShe:"مسؤول السلامة - الاسم",signHere:"وقّع أعلاه",clear:"مسح",
+ memNote:"تُحفظ البيانات في هذه الصفحة فقط - صدّر CSV أو PDF قبل الإغلاق.",
+ btnCsv:"تصدير CSV",btnPdf:"طباعة / تقرير PDF",remark:"ملاحظة / إجراء تصحيحي…",critical:"حرج",
+ sA:"أ. التحضير قبل الاختبار",sB:"ب. أثناء الاختبار",sC:"ج. بعد الاختبار وتفريغ الضغط",
+ csvMeta:["المشروع","المقاول","الموقع","النظام","التاريخ","وقت البدء","ضغط الاختبار","مدة الثبات","الوسيط","العداد/المعايرة","الضغط بداية","الضغط نهاية","النتيجة","الفني","مسؤول السلامة"],
+ csvHead:["م","القسم","البند","حرج","الحالة","ملاحظة"]},
+hi:{appTitle:"फ़ायर सिस्टम हाइड्रोस्टैटिक टेस्ट",appSub:"फ़ील्ड सेफ्टी चेकलिस्ट - डिजिटल डिलीवरी पायलट",
+ pass:"पास",fail:"फेल",na:"लागू नहीं",open:"बाकी",
+ vOpen:"जारी है",vOpenN:"सभी चेकलिस्ट आइटम पूरे करें।",
+ vStop:"रुकें - स्वीकृत नहीं",vStopN:"क्रिटिकल सेफ्टी आइटम फेल। टेस्ट रोकें और पहले सुधार करें।",
+ vAttn:"ध्यान दें",vAttnN:"गैर-क्रिटिकल आइटम फेल। सुधार करें और दर्ज करें।",
+ vOk:"स्वीकृत",vOkN:"सभी सुरक्षा शर्तें सत्यापित। टेस्ट आगे बढ़ सकता है।",
+ secInfo:"टेस्ट जानकारी",secSign:"हस्ताक्षर",
+ fProject:"प्रोजेक्ट",fContractor:"ठेकेदार",fLocation:"स्थान / ज़ोन",fSystem:"सिस्टम / लूप ID",
+  fDate:"तारीख़",fTime:"शुरुआत समय",fPressure:"टेस्ट प्रेशर",
+ hPressure:"NFPA 13/14: 200 psi (13.8 bar), या वर्किंग प्रेशर 150 psi से ऊपर हो तो +50 psi",
+ fHold:"होल्ड टाइम (मिनट)",hHold:"कम से कम 2 घंटे",fMedium:"टेस्ट माध्यम",fGauge:"गेज ID / कैलिब्रेशन",
+ fStart:"शुरुआती प्रेशर",fEnd:"अंतिम प्रेशर",
+ dropBad:"⚠ प्रेशर गिरा - स्वीकृति से पहले लीक जाँचें",dropOk:"✓ प्रेशर में कोई गिरावट नहीं",
+ sigTester:"टेस्टर / तकनीशियन - नाम",sigShe:"सेफ्टी ऑफिसर - नाम",signHere:"ऊपर साइन करें",clear:"मिटाएँ",
+ memNote:"डेटा केवल इस खुले पेज में रहता है - बंद करने से पहले CSV या PDF निकालें।",
+ btnCsv:"CSV निर्यात",btnPdf:"प्रिंट / PDF रिपोर्ट",remark:"टिप्पणी / सुधारात्मक कार्रवाई…",critical:"क्रिटिकल",
+ sA:"A. टेस्ट-पूर्व तैयारी",sB:"B. टेस्ट के दौरान",sC:"C. टेस्ट के बाद व प्रेशर रिलीज़",
+ csvMeta:["प्रोजेक्ट","ठेकेदार","स्थान","सिस्टम","तारीख़","समय","टेस्ट प्रेशर","होल्ड (मिनट)","माध्यम","गेज","प्रेशर शुरू","प्रेशर अंत","परिणाम","टेस्टर","सेफ्टी ऑफिसर"],
+ csvHead:["क्र.","सेक्शन","आइटम","क्रिटिकल","स्थिति","टिप्पणी"]},
+ur:{appTitle:"فائر سسٹم ہائیڈروسٹیٹک ٹیسٹ",appSub:"فیلڈ سیفٹی چیک لسٹ - ڈیجیٹل ڈیلیوری پائلٹ",
+ pass:"پاس",fail:"فیل",na:"لاگو نہیں",open:"باقی",
+ vOpen:"جاری ہے",vOpenN:"تمام چیک لسٹ آئٹم مکمل کریں۔",
+ vStop:"رکیں - منظور نہیں",vStopN:"کریٹیکل سیفٹی آئٹم فیل۔ ٹیسٹ روکیں اور پہلے درست کریں۔",
+ vAttn:"توجہ درکار",vAttnN:"غیر کریٹیکل آئٹم فیل۔ درست کریں اور درج کریں۔",
+ vOk:"منظور",vOkN:"تمام حفاظتی تقاضے تصدیق شدہ۔ ٹیسٹ آگے بڑھ سکتا ہے۔",
+ secInfo:"ٹیسٹ کی معلومات",secSign:"دستخط",
+ fProject:"پروجیکٹ",fContractor:"ٹھیکیدار",fLocation:"مقام / زون",fSystem:"سسٹم / لوپ ID",
+  fDate:"تاریخ",fTime:"آغاز کا وقت",fPressure:"ٹیسٹ پریشر",
+ hPressure:"NFPA 13/14: ‏200 psi (13.8 bar)، یا ورکنگ پریشر 150 psi سے زیادہ ہو تو +50 psi",
+ fHold:"ہولڈ ٹائم (منٹ)",hHold:"کم از کم 2 گھنٹے",fMedium:"ٹیسٹ میڈیم",fGauge:"گیج ID / کیلیبریشن",
+ fStart:"ابتدائی پریشر",fEnd:"آخری پریشر",
+ dropBad:"⚠ پریشر گرا ہے - منظوری سے پہلے لیک چیک کریں",dropOk:"✓ پریشر میں کوئی کمی نہیں",
+ sigTester:"ٹیسٹر / ٹیکنیشن - نام",sigShe:"سیفٹی آفیسر - نام",signHere:"اوپر دستخط کریں",clear:"صاف کریں",
+ memNote:"ڈیٹا صرف اسی کھلے صفحے میں رہتا ہے - بند کرنے سے پہلے CSV یا PDF نکالیں۔",
+ btnCsv:"CSV ایکسپورٹ",btnPdf:"پرنٹ / PDF رپورٹ",remark:"تبصرہ / اصلاحی اقدام…",critical:"کریٹیکل",
+ sA:"A. ٹیسٹ سے پہلے تیاری",sB:"B. دورانِ ٹیسٹ",sC:"C. ٹیسٹ کے بعد اور پریشر ریلیز",
+ csvMeta:["پروجیکٹ","ٹھیکیدار","مقام","سسٹم","تاریخ","وقت","ٹیسٹ پریشر","ہولڈ (منٹ)","میڈیم","گیج","پریشر آغاز","پریشر اختتام","نتیجہ","ٹیسٹر","سیفٹی آفیسر"],
+ csvHead:["نمبر","سیکشن","آئٹم","کریٹیکل","حالت","تبصرہ"]}
+};
+
+/* items: sec A/B/C, crit=critical red-flag item */
+const ITEMS=[
+{s:"A",crit:1,
+ en:"Approved test procedure and valid Permit to Work in place",
+ ar:"إجراء اختبار معتمد وتصريح عمل ساري المفعول",
+ hi:"स्वीकृत टेस्ट प्रोसीजर और वैध वर्क परमिट मौजूद",
+ ur:"منظور شدہ ٹیسٹ پروسیجر اور درست ورک پرمٹ موجود"},
+{s:"A",crit:1,
+ en:"Test area barricaded, warning signs posted, non-essential personnel excluded",
+ ar:"منطقة الاختبار محاطة بحواجز ولافتات تحذيرية، وإبعاد الأفراد غير المعنيين",
+ hi:"टेस्ट एरिया बैरिकेड, चेतावनी बोर्ड लगे, गैर-ज़रूरी लोग बाहर",
+ ur:"ٹیسٹ ایریا بیریکیڈ، وارننگ سائن لگے، غیر متعلقہ افراد باہر"},
+{s:"A",crit:0,
+ en:"Piping visually inspected - joints, welds, supports and hangers complete",
+ ar:"فحص بصري للمواسير - الوصلات واللحامات والحوامل مكتملة",
+ hi:"पाइपिंग का विज़ुअल निरीक्षण - जॉइंट, वेल्ड, सपोर्ट पूरे",
+ ur:"پائپنگ کا بصری معائنہ - جوائنٹ، ویلڈ، سپورٹ مکمل"},
+{s:"A",crit:1,
+ en:"Calibrated pressure gauge fitted; certificate valid; range 1.5–4× test pressure",
+ ar:"تركيب عداد ضغط معاير بشهادة سارية؛ المدى 1.5–4 أضعاف ضغط الاختبار",
+ hi:"कैलिब्रेटेड प्रेशर गेज लगा; सर्टिफिकेट वैध; रेंज टेस्ट प्रेशर का 1.5–4×",
+ ur:"کیلیبریٹڈ پریشر گیج نصب؛ سرٹیفکیٹ درست؛ رینج ٹیسٹ پریشر کا 1.5–4×"},
+{s:"A",crit:0,
+ en:"Sprinkler heads, valves and end caps rated for test pressure; correct blinds/plugs installed",
+ ar:"رؤوس الرشاشات والصمامات والسدادات مناسبة لضغط الاختبار",
+ hi:"स्प्रिंकलर हेड, वाल्व, एंड कैप टेस्ट प्रेशर के लिए रेटेड; सही प्लग लगे",
+ ur:"سپرنکلر ہیڈ، والو اور اینڈ کیپ ٹیسٹ پریشر کے لیے موزوں؛ درست پلگ نصب"},
+{s:"A",crit:0,
+ en:"System completely filled with water; air removed through high-point vents",
+ ar:"النظام مملوء بالكامل بالماء وإزالة الهواء من فتحات التهوية العلوية",
+ hi:"सिस्टम पूरी तरह पानी से भरा; हाई-पॉइंट वेंट से हवा निकाली",
+ ur:"سسٹم مکمل پانی سے بھرا؛ ہائی پوائنٹ وینٹ سے ہوا نکالی گئی"},
+{s:"A",crit:1,
+ en:"Pressure relief valve installed on test pump and set correctly",
+ ar:"تركيب صمام تنفيس على مضخة الاختبار وضبطه بشكل صحيح",
+ hi:"टेस्ट पंप पर रिलीफ वाल्व लगा और सही सेट",
+ ur:"ٹیسٹ پمپ پر ریلیف والو نصب اور درست سیٹ"},
+{s:"A",crit:0,
+ en:"Test pump, hoses and fittings inspected and rated for test pressure",
+ ar:"فحص مضخة الاختبار والخراطيم والوصلات ومطابقتها لضغط الاختبار",
+ hi:"टेस्ट पंप, होज़ और फिटिंग जाँचे और टेस्ट प्रेशर के लिए रेटेड",
+ ur:"ٹیسٹ پمپ، ہوز اور فٹنگ چیک شدہ اور ٹیسٹ پریشر کے لیے موزوں"},
+{s:"A",crit:0,
+ en:"System isolated from equipment not under test (fire pump, alarm devices, spades/blinds)",
+ ar:"عزل النظام عن المعدات غير الخاضعة للاختبار (مضخة الحريق، أجهزة الإنذار)",
+ hi:"जो उपकरण टेस्ट में नहीं, उनसे सिस्टम अलग (फायर पंप, अलार्म डिवाइस)",
+ ur:"جو آلات ٹیسٹ میں نہیں ان سے سسٹم الگ (فائر پمپ، الارم ڈیوائس)"},
+{s:"A",crit:0,
+ en:"Test crew wearing required PPE; communication established between pump operator and observers",
+ ar:"طاقم الاختبار يرتدي معدات الحماية؛ وتأمين التواصل بين مشغل المضخة والمراقبين",
+ hi:"टेस्ट टीम PPE में; पंप ऑपरेटर और ऑब्ज़र्वर में संपर्क स्थापित",
+ ur:"ٹیسٹ ٹیم PPE میں؛ پمپ آپریٹر اور مبصرین میں رابطہ قائم"},
+{s:"B",crit:0,
+ en:"Pressure raised gradually in stages; no sudden pressurization",
+ ar:"رفع الضغط تدريجيا على مراحل دون ضغط مفاجئ",
+ hi:"प्रेशर धीरे-धीरे चरणों में बढ़ाया; अचानक नहीं",
+ ur:"پریشر بتدریج مراحل میں بڑھایا گیا؛ اچانک نہیں"},
+{s:"B",crit:0,
+ en:"Required test pressure reached and maintained for the full hold time",
+ ar:"الوصول إلى ضغط الاختبار المطلوب والمحافظة عليه طوال مدة الثبات",
+ hi:"आवश्यक टेस्ट प्रेशर पहुँचा और पूरे होल्ड टाइम तक बना रहा",
+ ur:"مطلوبہ ٹیسٹ پریشر حاصل اور پورے ہولڈ ٹائم تک برقرار"},
+{s:"B",crit:1,
+ en:"No person approaches, tightens or strikes joints while system is under pressure",
+ ar:"لا يقترب أحد من الوصلات أو يشدّها أثناء وجود النظام تحت الضغط",
+ hi:"प्रेशर के दौरान कोई जॉइंट के पास न जाए, न कसे, न ठोके",
+ ur:"پریشر کے دوران کوئی جوائنٹ کے قریب نہ جائے، نہ کسے، نہ ٹھوکے"},
+{s:"B",crit:0,
+ en:"No visible leakage at joints, fittings, valves or sprinkler connections",
+ ar:"لا يوجد تسرب مرئي في الوصلات أو الصمامات أو توصيلات الرشاشات",
+ hi:"जॉइंट, फिटिंग, वाल्व या स्प्रिंकलर कनेक्शन पर कोई लीक नहीं",
+ ur:"جوائنٹ، فٹنگ، والو یا سپرنکلر کنکشن پر کوئی لیک نہیں"},
+{s:"B",crit:0,
+ en:"Continuous monitoring by competent person; pressure readings recorded at intervals",
+ ar:"مراقبة مستمرة من شخص مختص وتسجيل قراءات الضغط على فترات",
+ hi:"सक्षम व्यक्ति द्वारा लगातार निगरानी; रीडिंग समय-समय पर दर्ज",
+ ur:"اہل شخص کی مسلسل نگرانی؛ ریڈنگ وقفوں سے درج"},
+{s:"C",crit:1,
+ en:"Pressure released gradually through vent/drain; system verified at zero pressure before breaking containment",
+ ar:"تفريغ الضغط تدريجيا والتأكد من وصول النظام إلى الضغط صفر قبل فتح أي وصلة",
+ hi:"प्रेशर धीरे-धीरे रिलीज़; कोई जॉइंट खोलने से पहले ज़ीरो प्रेशर सत्यापित",
+ ur:"پریشر بتدریج ریلیز؛ کوئی جوائنٹ کھولنے سے پہلے زیرو پریشر کی تصدیق"},
+{s:"C",crit:0,
+ en:"Test water drained and disposed of properly; no flooding of adjacent areas",
+ ar:"تصريف مياه الاختبار والتخلص منها بشكل سليم دون إغراق المناطق المجاورة",
+ hi:"टेस्ट का पानी सही तरह निकाला; आस-पास पानी नहीं फैला",
+ ur:"ٹیسٹ کا پانی درست طریقے سے نکالا گیا؛ اطراف میں پانی نہیں پھیلا"},
+{s:"C",crit:0,
+ en:"Blinds/plugs removed and system reinstated to design configuration",
+ ar:"إزالة السدادات وإعادة النظام إلى وضعه التصميمي",
+ hi:"प्लग/ब्लाइंड हटाए और सिस्टम डिज़ाइन स्थिति में बहाल",
+ ur:"پلگ/بلائنڈ ہٹائے گئے اور سسٹم ڈیزائن حالت میں بحال"},
+{s:"C",crit:0,
+ en:"Barricades and warning signs removed only after area clearance",
+ ar:"إزالة الحواجز واللافتات بعد التأكد من خلو المنطقة فقط",
+ hi:"एरिया क्लियरेंस के बाद ही बैरिकेड और साइन हटाए",
+ ur:"ایریا کلیئرنس کے بعد ہی بیریکیڈ اور سائن ہٹائے گئے"},
+{s:"C",crit:0,
+ en:"Results recorded; punch items closed or logged with corrective actions",
+ ar:"تسجيل النتائج وإغلاق الملاحظات أو توثيقها مع الإجراءات التصحيحية",
+ hi:"परिणाम दर्ज; पंच आइटम बंद या सुधारात्मक कार्रवाई के साथ दर्ज",
+ ur:"نتائج درج؛ پنچ آئٹم بند یا اصلاحی اقدام کے ساتھ درج"}
+];
+
+/* =============== STATE & RENDER =============== */
+let lang="en";
+const state={status:{},remarks:{}};
+const $=id=>document.getElementById(id);
+const T=k=>UI[lang][k];
+
+function renderSections(){
+  const secs={A:T("sA"),B:T("sB"),C:T("sC")};
+  let html="",no=0;
+  for(const s of ["A","B","C"]){
+    html+=`<section class="card"><h2 class="sec display"><span>${secs[s]}</span></h2>`;
+    ITEMS.forEach((it,i)=>{
+      if(it.s!==s)return;
+      no++;
+      const st=state.status[i]||"";
+      html+=`<div class="item ${st==='F'?'failed':''}" id="it${i}">
+        <div class="item-top">
+          <div class="item-no">${String(no).padStart(2,"0")}</div>
+          <div class="item-txt">${it[lang]}${it.crit?`<span class="crit">${T("critical")}</span>`:""}</div>
+        </div>
+        <div class="seg">
+          <button class="p ${st==='P'?'on':''}" onclick="setSt(${i},'P')">${T("pass")}</button>
+          <button class="f ${st==='F'?'on':''}" onclick="setSt(${i},'F')">${T("fail")}</button>
+          <button class="n ${st==='N'?'on':''}" onclick="setSt(${i},'N')">${T("na")}</button>
+        </div>
+        <div class="rmk ${st==='F'||state.remarks[i]?'show':''}">
+          <input type="text" placeholder="${T("remark")}" value="${(state.remarks[i]||"").replace(/"/g,'&quot;')}" oninput="state.remarks[${i}]=this.value">
+        </div>
+      </div>`;
+    });
+    html+=`</section>`;
+  }
+  $("sections").innerHTML=html;
+}
+
+function setSt(i,v){
+  state.status[i]=state.status[i]===v?"":v;
+  renderSections(); updateTag();
+}
+
+function verdict(){
+  let p=0,f=0,n=0,critFail=false;
+  ITEMS.forEach((it,i)=>{
+    const s=state.status[i];
+    if(s==="P")p++; else if(s==="F"){f++; if(it.crit)critFail=true;} else if(s==="N")n++;
+  });
+  const open=ITEMS.length-p-f-n;
+  let code,label,note;
+  if(critFail){code="stop";label=T("vStop");note=T("vStopN");}
+  else if(f>0){code="attn";label=T("vAttn");note=T("vAttnN");}
+  else if(open>0){code="open";label=T("vOpen");note=T("vOpenN");}
+  else{code="ok";label=T("vOk");note=T("vOkN");}
+  return{p,f,n,open,code,label,note};
+}
+
+function updateTag(){
+  const v=verdict(),tag=$("tag");
+  tag.className="tag v-"+(v.code==="ok"?"approved":v.code);
+  $("tagVerdict").textContent=v.label;
+  $("tagNote").textContent=v.note;
+  $("cPass").textContent=v.p; $("cFail").textContent=v.f;
+  $("cNa").textContent=v.n; $("cOpen").textContent=v.open;
+  const tot=ITEMS.length;
+  $("bar").innerHTML=
+    `<i style="width:${v.p/tot*100}%;background:var(--pass)"></i>`+
+    `<i style="width:${v.f/tot*100}%;background:var(--fail)"></i>`+
+    `<i style="width:${v.n/tot*100}%;background:var(--na)"></i>`;
+}
+
+function checkDrop(){
+  const a=parseFloat($("pStart").value),b=parseFloat($("pEnd").value),el=$("dropFlag");
+  if(isNaN(a)||isNaN(b)){el.className="drop-flag";return;}
+  if(b<a){el.className="drop-flag bad";el.textContent=T("dropBad")+` (−${(a-b).toFixed(1)})`;}
+  else{el.className="drop-flag ok";el.textContent=T("dropOk");}
+}
+$("pStart").addEventListener("input",checkDrop);
+$("pEnd").addEventListener("input",checkDrop);
+
+/* =============== LANGUAGE =============== */
+function setLang(l){
+  lang=l;
+  document.documentElement.lang=l;
+  document.documentElement.dir=(l==="ar"||l==="ur")?"rtl":"ltr";
+  document.querySelectorAll("[data-t]").forEach(el=>{
+    const k=el.getAttribute("data-t"); if(UI[l][k]!==undefined)el.innerHTML=UI[l][k];
+  });
+  document.querySelectorAll("#langBar button").forEach(b=>b.classList.toggle("on",b.dataset.lang===l));
+  renderSections(); updateTag(); checkDrop();
+}
+document.querySelectorAll("#langBar button").forEach(b=>b.addEventListener("click",()=>setLang(b.dataset.lang)));
+
+/* =============== SIGNATURES =============== */
+function initSig(id){
+  const c=$(id),ctx=c.getContext("2d");
+  function size(){
+    const img=c.toDataURL(),r=c.getBoundingClientRect(),dpr=window.devicePixelRatio||1;
+    c.width=r.width*dpr; c.height=120*dpr; ctx.scale(dpr,dpr);
+    ctx.lineWidth=2; ctx.lineCap="round"; ctx.strokeStyle="#1a1d21";
+    const im=new Image(); im.onload=()=>ctx.drawImage(im,0,0,r.width,120); im.src=img;
+  }
+  size(); window.addEventListener("resize",size);
+  let draw=false;
+  const pos=e=>{const r=c.getBoundingClientRect();return[e.clientX-r.left,e.clientY-r.top];};
+  c.addEventListener("pointerdown",e=>{draw=true;const[x,y]=pos(e);ctx.beginPath();ctx.moveTo(x,y);c.setPointerCapture(e.pointerId);});
+  c.addEventListener("pointermove",e=>{if(!draw)return;const[x,y]=pos(e);ctx.lineTo(x,y);ctx.stroke();});
+  ["pointerup","pointercancel"].forEach(ev=>c.addEventListener(ev,()=>draw=false));
+}
+function clearSig(id){const c=$(id);c.getContext("2d").clearRect(0,0,c.width,c.height);}
+initSig("sigTester"); initSig("sigShe");
+
+/* =============== EXPORTS =============== */
+function csvCell(v){v=(v??"").toString().replace(/"/g,'""');return `"${v}"`;}
+$("btnCsv").addEventListener("click",()=>{
+  const v=verdict(),U=UI[lang];
+  const meta=[$("fProject").value,$("fContractor").value,$("fLocation").value,$("fSystem").value,
+    $("fDate").value,$("fTime").value,$("fPressure").value,$("fHold").value,
+    $("fMedium").value,$("fGauge").value,$("pStart").value,$("pEnd").value,v.label,
+    $("nameTester").value,$("nameShe").value];
+  let rows=U.csvMeta.map((k,i)=>csvCell(k)+","+csvCell(meta[i])).join("\r\n");
+  rows+="\r\n\r\n"+U.csvHead.map(csvCell).join(",")+"\r\n";
+  const stTxt={P:U.pass,F:U.fail,N:U.na,"":U.open};
+  const secTxt={A:U.sA,B:U.sB,C:U.sC};
+  ITEMS.forEach((it,i)=>{
+    rows+=[i+1,secTxt[it.s],it[lang],it.crit?U.critical:"",stTxt[state.status[i]||""],state.remarks[i]||""].map(csvCell).join(",")+"\r\n";
+  });
+  const blob=new Blob(["\uFEFF"+rows],{type:"text/csv;charset=utf-8;"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download=`hydrotest_${($("fSystem").value||"system").replace(/[^\w-]/g,"_")}_${$("fDate").value||"date"}.csv`;
+  a.click(); URL.revokeObjectURL(a.href);
+});
+$("btnPdf").addEventListener("click",()=>window.print());
+
+/* =============== INIT =============== */
+const now=new Date();
+$("fDate").value=now.toISOString().slice(0,10);
+$("fTime").value=now.toTimeString().slice(0,5);
+renderSections(); updateTag();
+</script>
+</body>
+</html>
